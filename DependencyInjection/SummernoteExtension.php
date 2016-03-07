@@ -1,6 +1,6 @@
 <?php
 
-namespace FM\SummernoteBundle\DependencyInjection;
+namespace ADN\SummernoteBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -8,9 +8,9 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Class FMSummernoteExtension.
+ * Class SummernoteExtension.
  */
-class FMSummernoteExtension extends Extension
+class SummernoteExtension extends Extension
 {
     /**
      * @param array            $configs
@@ -21,9 +21,9 @@ class FMSummernoteExtension extends Extension
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader->load('services.yml');
 
-        $container->setParameter('fm_summernote', $config);
+        $container->setParameter('adn_summernote', $config);
     }
 
     /**
@@ -31,14 +31,6 @@ class FMSummernoteExtension extends Extension
      */
     public function getAlias()
     {
-        return 'fm_summernote';
-    }
-
-    /**
-     * @return string
-     */
-    public function getNamespace()
-    {
-        return 'http://helios-ag.github.io/schema/dic/fm_summernote';
+        return 'adn_summernote';
     }
 }

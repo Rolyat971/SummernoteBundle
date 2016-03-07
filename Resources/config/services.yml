@@ -1,0 +1,9 @@
+services:
+    twig.extension.adn_summernote:
+        class: ADN\SummernoteBundle\Twig\Extension\SummernoteExtension
+        public: false
+        arguments:
+            - %adn_summernote%
+            - @twig
+        tags:
+            - { name: twig.extension }

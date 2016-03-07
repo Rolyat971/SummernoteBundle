@@ -1,11 +1,11 @@
 <?php
 
-namespace FM\SummernoteBundle\Twig\Extension;
+namespace ADN\SummernoteBundle\Twig\Extension;
 
 /**
- * Class FMSummernoteExtension.
+ * Class SummernoteExtension.
  */
-class FMSummernoteExtension extends \Twig_Extension
+class SummernoteExtension extends \Twig_Extension
 {
     /**
      * @var array
@@ -18,7 +18,7 @@ class FMSummernoteExtension extends \Twig_Extension
     protected $twig;
 
     /**
-     * @param $parameters
+     * @param array             $parameters
      * @param \Twig_Environment $twig
      */
     public function __construct($parameters, \Twig_Environment $twig)
@@ -62,13 +62,27 @@ class FMSummernoteExtension extends \Twig_Extension
 
         $options['toolbar'] = $this->prepareToolbar();
 
-        $base_path = (!isset($this->parameters['base_path']) ? 'bundles/fmsummernote/' : $this->parameters['base_path']);
+        $basePath = (!isset($this->parameters['base_path']) ? 'bundles/fmsummernote/' : $this->parameters['base_path']);
 
-        return $this->twig->render($template, ['sn' => $options, 'base_path' => $base_path]);
+        return $this->twig->render($template, ['sn' => $options, 'base_path' => $basePath]);
     }
 
+    /**
+     * Returns the name of the extension.
+     *
+     * @return string The extension name
+     */
+    public function getName()
+    {
+        return 'adn_summernote';
+    }
+
+    /**
+     * @return string
+     */
     private function prepareToolbar()
-    {   // builds summernote toolbar array
+    {
+        // builds summernote toolbar array
         if (empty($this->parameters['toolbar']) && empty($this->parameters['extra_toolbar'])) {
             return;
         }
@@ -76,12 +90,15 @@ class FMSummernoteExtension extends \Twig_Extension
         $str = '[';
         $toolbar = $this->parameters['toolbar'];
         $str .= $this->processToolbar($toolbar);
+
         if (!empty($this->parameters['extra_toolbar'])) {
             if (empty($this->parameters['toolbar'])) {
                 $str .= $this->getDefaultToolbar();
             }
+
             $str .= $this->processToolbar($this->parameters['extra_toolbar']);
         }
+
         $str .= ']';
 
         return $str;
@@ -97,6 +114,7 @@ class FMSummernoteExtension extends \Twig_Extension
     private function processToolbar(array $toolbar)
     {
         $str = '';
+
         foreach ($toolbar as $key => $tb) {
             $str .= sprintf("[ '%s', ", $key);
             $str .= json_encode($tb);
@@ -123,15 +141,5 @@ class FMSummernoteExtension extends \Twig_Extension
                 ['insert', ['link', 'picture', 'hr']],
                 ['view', ['fullscreen', 'codeview']],
                 ['help', ['help']],";
-    }
-
-    /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
-     */
-    public function getName()
-    {
-        return 'fm_summernote';
     }
 }

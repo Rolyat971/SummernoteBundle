@@ -1,6 +1,6 @@
 <?php
 
-namespace FM\SummernoteBundle\DependencyInjection;
+namespace ADN\SummernoteBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -16,7 +16,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('fm_summernote');
+        $rootNode = $treeBuilder->root('adn_summernote');
 
         $rootNode
             ->children()
@@ -32,7 +32,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('summernote_css_path')->defaultValue('summernote.css')->end()
                 ->scalarNode('summernote_js_path')->defaultValue('summernote.min.js')->end()
                 ->scalarNode('basePath')->end()
-                ->scalarNode('init_template')->defaultValue('FMSummernoteBundle::init.html.twig')->end()
+                ->scalarNode('init_template')->defaultValue('ADNSummernoteBundle::init.html.twig')->end()
                 ->scalarNode('selector')->defaultValue('.summernote')->end()
                 ->scalarNode('language')->end()
                 ->arrayNode('plugins')

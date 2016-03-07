@@ -1,12 +1,12 @@
-FMSummernoteBundle
+SummernoteBundle
 ==================
 
-FMSummernoteBundle adds [summernote](https://github.com/summernote/summernote) bundle
+SummernoteBundle adds [summernote](https://github.com/summernote/summernote) bundle
 
 
 | StyleCI | Downloads | Version | License |
 |---------|-----------|---------|---------|
-|[![StyleCI](https://styleci.io/repos/43000455/shield)](https://styleci.io/repos/43000455)|[![Total Downloads](https://poser.pugx.org/helios-ag/fm-summernote-bundle/downloads)](https://packagist.org/packages/helios-ag/fm-summernote-bundle)|[![Latest Stable Version](https://poser.pugx.org/helios-ag/fm-summernote-bundle/v/stable)](https://packagist.org/packages/helios-ag/fm-summernote-bundle)|[![License](https://poser.pugx.org/helios-ag/fm-summernote-bundle/license)](https://packagist.org/packages/helios-ag/fm-summernote-bundle)|
+|[![StyleCI](https://styleci.io/repos/44318975/shield)](https://styleci.io/repos/44318975)|[![Total Downloads](https://poser.pugx.org/adnedelcu/summernote-bundle/downloads)](https://packagist.org/packages/adnedelcu/summernote-bundle)|[![Latest Stable Version](https://poser.pugx.org/adnedelcu/summernote-bundle/v/stable)](https://packagist.org/packages/adnedelcu/summernote-bundle)|[![License](https://poser.pugx.org/adnedelcu/summernote-bundle/license)](https://packagist.org/packages/adnedelcu/summernote-bundle)|
 
 
 ## Installation
@@ -17,16 +17,16 @@ FMSummernoteBundle adds [summernote](https://github.com/summernote/summernote) b
 Using Composer, just add the following configuration to your `composer.json`:
 
 Or you can use composer to install this bundle:
-Add FMSummernoteBundle in your composer.json:
+Add SummernoteBundle in your composer.json:
 
 ```sh
-    composer require helios-ag/fm-summernote-bundle
+    composer require adnedelcu/summernote-bundle
 ```
 
 Now tell composer to download the bundle by running the command:
 
 ```sh
-    composer update helios-ag/fm-summernote-bundle
+    composer update adnedelcu/summernote-bundle
 ```
 
 ### Step 2: Enable the bundle
@@ -41,7 +41,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new FM\SummernoteBundle\FMSummernoteBundle(),
+        new ADN\SummernoteBundle\SummernoteBundle(),
     );
 }
 ```
@@ -51,10 +51,9 @@ public function registerBundles()
 You can configure bundle as follows
 
 ```yaml
-fm_summernote:
+adn_summernote:
     plugins:
         - video
-        - elfinder # by default plugins not set, bundle comes with elfinder plugin / provides integration with FMElfinderBundle
     selector: .summernote #defines summernote selector for apply to
     toolbar: # define toolbars, if no toolbar configured, default toolbars defined
         ['style', ['style']]
@@ -74,5 +73,5 @@ Twig template example
 
 ```twig
     {{ summernote_init() }}
-    <textarea class="summernote"></textarea>  
+    <textarea class="summernote"></textarea>
 ```

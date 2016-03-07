@@ -36,5 +36,5 @@ Please format your commit messages as follows:
 
  [gh-help]: https://help.github.com
  [gh-pr]:   https://help.github.com/send-pull-requests
- [issue]:   https://github.com/helios-ag/FMSummernoteBundle/issues/new
- [pr]:      https://github.com/helios-ag/FMSummernoteBundle/pull/new
+ [issue]:   https://github.com/adnedelcu/SummernoteBundle/issues/new
+ [pr]:      https://github.com/adnedelcu/SummernoteBundle/pull/new
