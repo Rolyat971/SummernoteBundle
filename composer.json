@@ -2,6 +2,7 @@
     "name": "adnedelcu/summernote-bundle",
     "description": "Summernote bundle, adds Summernote WYSIWYG editor to your Symfony2 project",
     "keywords": ["summernote","WYSIWYG", "editor"],
+    "version": "1.0.1",
     "type": "symfony-bundle",
     "homepage": "https://github.com/adnedelcu/summernote-bundle",
     "license": "MIT",
