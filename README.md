@@ -20,7 +20,7 @@ Or you can use composer to install this bundle:
 Add SummernoteBundle in your composer.json:
 
 ```sh
-    composer require adnedelcu/summernote-bundle
+    composer require adnedelcu/summernote-bundle --no-update
 ```
 
 Now tell composer to download the bundle by running the command:
@@ -41,7 +41,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new ADN\SummernoteBundle\SummernoteBundle(),
+        new ADN\SummernoteBundle\ADNSummernoteBundle(),
     );
 }
 ```
