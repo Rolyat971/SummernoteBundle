@@ -3,9 +3,9 @@
 namespace ADN\SummernoteBundle\Twig\Extension;
 
 /**
- * Class SummernoteExtension.
+ * Class ADNSummernoteExtension.
  */
-class SummernoteExtension extends \Twig_Extension
+class ADNSummernoteExtension extends \Twig_Extension
 {
     /**
      * @var array

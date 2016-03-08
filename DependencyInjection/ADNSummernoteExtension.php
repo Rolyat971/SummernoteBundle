@@ -8,9 +8,9 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
- * Class SummernoteExtension.
+ * Class ADNSummernoteExtension.
  */
-class SummernoteExtension extends Extension
+class ADNSummernoteExtension extends Extension
 {
     /**
      * @param array            $configs

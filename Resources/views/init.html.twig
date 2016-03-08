@@ -18,12 +18,30 @@
         <script type="text/javascript" src="{{ asset(base_path ~ 'plugin/summernote-ext-'~plugin~'.js') }}"></script>
     {% endfor %}
 {% endif %}
+
+{% if sn.upload_images %}
+<div id="upload-message-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>The following files were not uploaded because they were too big (max file size is 1 MB):</p>
+                <ul id="files-container"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <script type="text/javascript">
-    {% autoescape false %}
+{% autoescape false %}
+    var editor;
+{% if sn.upload_images %}
+    var MAX_UPLOAD_SIZE = {{ sn.max_upload_size }};
+    var notUploaded = [];
+    var modal = $('#upload-message-modal');
+    modal.modal({show: false});
+{% endif %}
     var summernoteConfig = {
-        {% if sn.width is not null %}
-        width: '{{ sn.width }}',
-        {% endif %}
         {% if sn.height is not null %}
         height: '{{ sn.height }}',
         {% endif %}
@@ -31,12 +49,59 @@
         lang: '{{ sn.language }}',
         {% endif %}
         {% if sn.toolbar is not null %}
-        toolbar: {{ sn.toolbar }}
+        toolbar: {{ sn.toolbar }},
+        {% endif %}
+        {% if sn.upload_images %}
+        onImageUpload: function (files) {
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].size <= MAX_UPLOAD_SIZE) {
+                    sendFile(files[i], editor);
+                } else {
+                    notUploaded.push(files[i].name);
+                }
+            }
+
+            $('#files-container').empty();
+
+            $.each(
+                notUploaded, function (index)
+                {
+                    $('#files-container').append("<li>" + notUploaded[index] + "</li>");
+                }
+            );
+
+            if (notUploaded.length > 0) {
+                modal.modal('show');
+            }
+        }
         {% endif %}
     };
-    $(function() {
-        $("{{ sn.selector }}").summernote(summernoteConfig);
-    });
-    {% endautoescape %}
 
+    {% if sn.upload_images %}
+    function sendFile(file, editor) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            data: data,
+            type: "POST",
+            url: Routing.generate({{ sn.image_upload_route }}),
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.status) {
+                    editor.summernote('insertImage', response.url);
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    }
+    {% endif %}
+
+    $(function() {
+        editor = $("{{ sn.selector }}");
+        editor.summernote(summernoteConfig);
+    });
+{% endautoescape %}
 </script>

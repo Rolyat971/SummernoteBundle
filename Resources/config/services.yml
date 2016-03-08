@@ -1,6 +1,6 @@
 services:
     twig.extension.adn_summernote:
-        class: ADN\SummernoteBundle\Twig\Extension\SummernoteExtension
+        class: ADN\SummernoteBundle\Twig\Extension\ADNSummernoteExtension
         public: false
         arguments:
             - %adn_summernote%

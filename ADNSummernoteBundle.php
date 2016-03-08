@@ -5,8 +5,8 @@ namespace ADN\SummernoteBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class SummernoteBundle.
+ * Class ADNSummernoteBundle.
  */
-class SummernoteBundle extends Bundle
+class ADNSummernoteBundle extends Bundle
 {
 }

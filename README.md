@@ -67,6 +67,20 @@ adn_summernote:
 
 ```
 
+To upload the images pasted in the editor, you can add the following configuration to the bundle
+
+```yaml
+adn_summernote:
+    # ...
+    upload_images: true # set to false if you don't want to upload images
+        # used for the image upload (so that the images will not be saved as base64 in the content)
+        max_upload_size: 1048576
+        # this route must be implemented if you want to use the image upload feature
+        image_upload_route: acme_image_upload
+    # ...
+
+```
+
 ##Usage
 
 Twig template example
