@@ -59,10 +59,13 @@ class ADNSummernoteExtension extends \Twig_Extension
         $options['jquery_path'] = $this->parameters['jquery_path'];
         $options['summernote_css_path'] = $this->parameters['summernote_css_path'];
         $options['summernote_js_path'] = $this->parameters['summernote_js_path'];
+        $options['upload_images'] = $this->parameters['upload_images'];
+        $options['image_upload_route'] = $this->parameters['image_upload_route'];
+        $options['max_upload_size'] = $this->parameters['max_upload_size'];
 
         $options['toolbar'] = $this->prepareToolbar();
 
-        $basePath = (!isset($this->parameters['base_path']) ? 'bundles/fmsummernote/' : $this->parameters['base_path']);
+        $basePath = !isset($this->parameters['base_path']) ? 'bundles/adnsummernote/' : $this->parameters['base_path'];
 
         return $this->twig->render($template, ['sn' => $options, 'base_path' => $basePath]);
     }

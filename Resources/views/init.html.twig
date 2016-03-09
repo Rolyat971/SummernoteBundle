@@ -34,30 +34,67 @@
 
 <script type="text/javascript">
 {% autoescape false %}
+    /**
+     * PasteWord
+     */
+    var PasteWord = (function () {
+        /**
+         * formatInput removes all MS Word formatting
+         *
+         * Original source/author:
+         * http://patisserie.keensoftware.com/en/pages/remove-word-formatting-from-rich-text-editor-with-javascript
+         *
+         * @param {String} sInput
+         * @return {String} Reformatted input
+         */
+        var formatInput = function (sInput) {
+            sInput = sInput.replace(/(<[^<>]+) style=['"][^'"<>]*['"]/gi, "$1");
+            sInput = sInput.replace(/(<[^<>]+) style=[^'"<> ]+/gi, "$1");
+            sInput = sInput.replace(/(<[^<>]+) class=['"][^'"<>]*['"]/gi, "$1");
+            sInput = sInput.replace(/(<[^<>]+) class=[^'"<> ]+/gi, "$1");
+            sInput = sInput.replace(/<style[\s\S]*?<\/style>\s*/gim, "");
+            sInput = sInput.replace(/<span[^<>]*>([\s\S]*?)<\/span>/gim, "$1");
+            sInput = sInput.replace(/(<[^<>]+) id=['"][^'"<>]*['"]/gi, "$1");
+            sInput = sInput.replace(/<script[\s\S]*?<\/script>\s*/gim, "");
+            sInput = sInput.replace(/<img[^<>]*>\s*/gim, "");
+            sInput = sInput.replace(/<form[\s\S]*?<\/form>\s*/gim, "");
+            sInput = sInput.replace(/<([a-z0-9]+)[^<>]*>(\s|&nbsp;)*<\/\1>\s*/gim, "");
+            // sInput = sInput.replace(/<([a-z0-9]+) [^<>]+>/gim, "<$1>");
+            sInput = sInput.replace(/<!--[\s\S]*?-->\s*/gim, "");
+
+            return sInput;
+        };
+
+        return {
+            format: formatInput
+        };
+    })();
+
     var editor;
 {% if sn.upload_images %}
     var MAX_UPLOAD_SIZE = {{ sn.max_upload_size }};
-    var notUploaded = [];
     var modal = $('#upload-message-modal');
     modal.modal({show: false});
 {% endif %}
     var summernoteConfig = {
-        {% if sn.height is not null %}
+{% if sn.height is not null %}
         height: '{{ sn.height }}',
-        {% endif %}
-        {% if sn.language is not null %}
+{% endif %}
+{% if sn.language is not null %}
         lang: '{{ sn.language }}',
-        {% endif %}
-        {% if sn.toolbar is not null %}
+{% endif %}
+{% if sn.toolbar is not null %}
         toolbar: {{ sn.toolbar }},
-        {% endif %}
-        {% if sn.upload_images %}
+{% endif %}
+{% if sn.upload_images %}
         onImageUpload: function (files) {
+            var notUploaded = [];
+
             for (var i = 0; i < files.length; i++) {
                 if (files[i].size <= MAX_UPLOAD_SIZE) {
                     sendFile(files[i], editor);
                 } else {
-                    notUploaded.push(files[i].name);
+                    notUploaded.push(typeof files[i].name !== 'undefined' ? files[i].name : 'clipboard file');
                 }
             }
 
@@ -73,11 +110,27 @@
             if (notUploaded.length > 0) {
                 modal.modal('show');
             }
+        },
+        onPaste: function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var paste = e.originalEvent.clipboardData && e.originalEvent.clipboardData.getData ?
+                e.originalEvent.clipboardData.getData('text/html') :   // Standard
+                window.clipboardData && window.clipboardData.getData ?
+                window.clipboardData.getData('Html') :                 // MS
+                false;
+
+            if (/Mso/.test(paste)) {
+                var paste = PasteWord.format(paste);
+            }
+
+            editor.code(paste);
         }
-        {% endif %}
+{% endif %}
     };
 
-    {% if sn.upload_images %}
+{% if sn.upload_images %}
     function sendFile(file, editor) {
         data = new FormData();
         data.append("file", file);
@@ -97,7 +150,7 @@
             }
         });
     }
-    {% endif %}
+{% endif %}
 
     $(function() {
         editor = $("{{ sn.selector }}");
