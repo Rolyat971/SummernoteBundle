@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{{ asset(base_path ~ 'vendor/js.cookie.js') }}"></script>
 {% if sn.include_jquery %}
     <script src="{{ asset(base_path ~ sn.jquery_path) }}"></script>
 {% endif %}
@@ -32,6 +33,28 @@
 </div>
 {% endif %}
 
+<div id="paste-from-word-message-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>We think that you copy-pasted the content from an Office application and by doing this, it might not look as good as you wish after you save.</p>
+                <p>We can clean the content formatting for you so that it is web-friendly, but it might not look the same after that and you might have to reapply styling inside the editor.</p>
+                <p>Do you want us to format the content?</p>
+                <div class="form-inline">
+                    <button class="btn btn-success" id="format-btn">Yes</button>
+                    <button class="btn btn-warning m-l-sm" id="no-format-btn">No</button>
+                    <div class="checkbox i-checks m-l-sm">
+                        <label>
+                            <input type="checkbox" name="never-ask-again" id="never-ask-again">
+                            <i></i> Don't bug me anymore
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 {% autoescape false %}
     /**
@@ -48,18 +71,39 @@
          * @return {String} Reformatted input
          */
         var formatInput = function (sInput) {
+            // Remove inline styles
             sInput = sInput.replace(/(<[^<>]+) style=['"][^'"<>]*['"]/gi, "$1");
             sInput = sInput.replace(/(<[^<>]+) style=[^'"<> ]+/gi, "$1");
+
+            // Remove classes
             sInput = sInput.replace(/(<[^<>]+) class=['"][^'"<>]*['"]/gi, "$1");
             sInput = sInput.replace(/(<[^<>]+) class=[^'"<> ]+/gi, "$1");
+
+            // Remove style tags
             sInput = sInput.replace(/<style[\s\S]*?<\/style>\s*/gim, "");
+
+            // Remove span tags but keep content
             sInput = sInput.replace(/<span[^<>]*>([\s\S]*?)<\/span>/gim, "$1");
+
+            // Remove id attribute
             sInput = sInput.replace(/(<[^<>]+) id=['"][^'"<>]*['"]/gi, "$1");
+
+            // Remove script tags
             sInput = sInput.replace(/<script[\s\S]*?<\/script>\s*/gim, "");
+
+            // Remove images
             sInput = sInput.replace(/<img[^<>]*>\s*/gim, "");
+
+            // Remove forms
             sInput = sInput.replace(/<form[\s\S]*?<\/form>\s*/gim, "");
+
+            // Remove tags with only whitespace
             sInput = sInput.replace(/<([a-z0-9]+)[^<>]*>(\s|&nbsp;)*<\/\1>\s*/gim, "");
+
+            // Remove tag attributes
             // sInput = sInput.replace(/<([a-z0-9]+) [^<>]+>/gim, "<$1>");
+
+            // Remove comments
             sInput = sInput.replace(/<!--[\s\S]*?-->\s*/gim, "");
 
             return sInput;
@@ -70,11 +114,18 @@
         };
     })();
 
+    var neverAskAgain = Cookies.get('neverAskAgain') == 'true';
     var editor;
 {% if sn.upload_images %}
-    var MAX_UPLOAD_SIZE = {{ sn.max_upload_size }};
-    var modal = $('#upload-message-modal');
-    modal.modal({show: false});
+    var MAX_UPLOAD_SIZE = {% if sn.max_upload_size is not null %}{{ sn.max_upload_size }}{% else %}1048576{% endif %};
+    var pasteFromWordModal = $('#paste-from-word-message-modal');
+    pasteFromWordModal.modal({
+        show: false,
+        backdrop: 'static',
+        keyboard: false
+    });
+    var uploadModal = $('#upload-message-modal');
+    uploadModal.modal({show: false});
 {% endif %}
     var summernoteConfig = {
 {% if sn.height is not null %}
@@ -108,7 +159,7 @@
             );
 
             if (notUploaded.length > 0) {
-                modal.modal('show');
+                uploadModal.modal('show');
             }
         },
         onPaste: function (e) {
@@ -121,8 +172,38 @@
                 window.clipboardData.getData('Html') :                 // MS
                 false;
 
-            if (/Mso/.test(paste)) {
-                var paste = PasteWord.format(paste);
+            if (/Mso/.test(paste) && !neverAskAgain) {
+                $('#never-ask-again').change(function () {
+                    $('#format-btn').prop('disabled', false);
+
+                    neverAskAgain = false;
+
+                    if ($(this).is(':checked')) {
+                        $('#format-btn').prop('disabled', true);
+
+                        neverAskAgain = true;
+                    }
+
+                    Cookies.set('neverAskAgain', neverAskAgain);
+                });
+
+                $('#format-btn', pasteFromWordModal).click(function () {
+                    paste = PasteWord.format(paste);
+
+                    editor.code(paste);
+
+                    pasteFromWordModal.modal('hide');
+                });
+
+                $('#no-format-btn', pasteFromWordModal).click(function () {
+                    editor.code(paste);
+
+                    pasteFromWordModal.modal('hide');
+                });
+
+                pasteFromWordModal.modal('show');
+
+                return;
             }
 
             editor.code(paste);
